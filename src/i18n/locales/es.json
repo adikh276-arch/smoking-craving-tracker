@@ -45,5 +45,6 @@
   "craving": "Antojo",
   "no_craving": "Sin antojos",
   "trigger": "Desencadenar:",
-  "outcome": "Resultado:"
+  "outcome": "Resultado:",
+  "back_to_home": "Volver a Inicio"
 }

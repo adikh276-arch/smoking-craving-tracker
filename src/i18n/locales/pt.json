@@ -45,5 +45,6 @@
   "craving": "Desejo",
   "no_craving": "Sem desejo",
   "trigger": "Acionar:",
-  "outcome": "Resultado:"
+  "outcome": "Resultado:",
+  "back_to_home": "Voltar para a página inicial"
 }

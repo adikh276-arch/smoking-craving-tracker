@@ -8,7 +8,7 @@
   "stability": "To jest stabilność.",
   "finish": "Skończyć",
   "quiet_strength": "Budujesz cichą siłę.",
-  "stay_steady": "Trzymaj się mocno — idzie ci lepiej, niż myślisz.",
+  "stay_steady": "Trzymaj się mocno — radzisz sobie lepiej, niż myślisz.",
   "done": "Zrobione",
   "how_strong": "Jak silne jest pragnienie?",
   "mild": "Łagodny",
@@ -41,9 +41,10 @@
   "view_history": "Wyświetl historię",
   "history": "Historia",
   "no_checkins": "Na razie nie ma możliwości odprawy.",
-  "complete_checkin_hint": "Wykonaj test sprawdzający Twoją zachciankę, aby zobaczyć historię jej występowania.",
+  "complete_checkin_hint": "Wykonaj test sprawdzający Twoją zachciankę, aby zobaczyć historię swoich pragnień.",
   "craving": "Pragnienie",
   "no_craving": "Brak pragnienia",
   "trigger": "Spust:",
-  "outcome": "Wynik:"
+  "outcome": "Wynik:",
+  "back_to_home": "Powrót do strony głównej"
 }

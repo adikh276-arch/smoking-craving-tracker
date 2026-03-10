@@ -349,13 +349,26 @@ const CravingCheck = () => {
     setDone(true);
   };
 
+  const reset = () => {
+    setStep(0);
+    setPath(null);
+    setIntensity(undefined);
+    setTrigger(undefined);
+    setChoice("deciding");
+    setDone(false);
+  };
+
   if (done) {
     return (
       <div className="min-h-dvh bg-app-gradient flex flex-col items-center justify-center px-8 animate-soft-fade">
-        <p className="text-muted-foreground text-center">{t('checkin_complete')}</p>
+        <p className="text-muted-foreground text-center mb-8">{t('checkin_complete')}</p>
+        <div className="w-full max-w-xs transition-all duration-200 active:scale-[1.02]">
+          <ActionButton label={t('back_to_home')} onClick={reset} />
+        </div>
       </div>
     );
   }
+
 
 
   const handleStep1 = (val?: string) => {
