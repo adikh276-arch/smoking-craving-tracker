@@ -77,13 +77,26 @@ const EntryCard = ({ entry }: { entry: CheckInEntry }) => {
   );
 };
 
+import { useState, useEffect } from "react";
+
 const History = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [entries, setEntries] = useState<CheckInEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const entries = getCheckIns();
+  useEffect(() => {
+    const fetchEntries = async () => {
+      const data = await getCheckIns();
+      setEntries(data);
+      setLoading(false);
+    };
+    fetchEntries();
+  }, []);
+
   const grouped = groupByDate(entries);
   const dates = Object.keys(grouped);
+
 
   return (
     <div className="min-h-dvh bg-app-gradient flex flex-col">
@@ -101,8 +114,13 @@ const History = () => {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto px-5 pb-8">
-        {dates.length === 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center flex-1 min-h-[60vh]">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          </div>
+        ) : dates.length === 0 ? (
           <div className="flex flex-col items-center justify-center flex-1 min-h-[60vh] animate-soft-fade">
+
             <p className="text-muted-foreground text-center text-lg font-heading">{t('no_checkins')}</p>
             <p className="text-muted-foreground text-center text-sm mt-1">
               {t('complete_checkin_hint')}

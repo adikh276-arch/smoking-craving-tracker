@@ -11,7 +11,12 @@ RUN npm run build
 
 FROM nginx:alpine
 
+ENV DATABASE_URL=$DATABASE_URL
+ENV NEON_PROJECT_ID=$NEON_PROJECT_ID
+ENV NEON_API_KEY=$NEON_API_KEY
+
 WORKDIR /usr/share/nginx/html
+
 
 # Create the subdirectory to match the base path
 RUN mkdir -p /usr/share/nginx/html/smoke_craving_tracker

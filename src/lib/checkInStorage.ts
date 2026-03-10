@@ -1,5 +1,8 @@
+import { pool } from "./db";
+
 export interface CheckInEntry {
   id: string;
+  user_id: string;
   date: string; // ISO string
   craving: boolean;
   intensity?: number;
@@ -7,25 +10,60 @@ export interface CheckInEntry {
   choice?: string;
 }
 
-const STORAGE_KEY = "craving-check-ins";
+export async function saveCheckIn(entry: Omit<CheckInEntry, "id" | "date" | "user_id">): Promise<CheckInEntry | null> {
+  const userId = sessionStorage.getItem("user_id");
+  if (!userId) {
+    console.error("No user_id found in session storage.");
+    return null;
+  }
 
-export function saveCheckIn(entry: Omit<CheckInEntry, "id" | "date">): CheckInEntry {
-  const full: CheckInEntry = {
-    ...entry,
-    id: crypto.randomUUID(),
-    date: new Date().toISOString(),
-  };
-  const existing = getCheckIns();
-  existing.unshift(full);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
-  return full;
+  try {
+    // Phase 11 & 12: Ensure user exists and persist data with isolation
+    await ensureUserExists(userId);
+
+    const query = `
+      INSERT INTO check_ins (user_id, craving, intensity, trigger, choice)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `;
+    const values = [
+      userId,
+      entry.craving,
+      entry.intensity ?? null,
+      entry.trigger ?? null,
+      entry.choice ?? null,
+    ];
+
+    const res = await pool.query(query, values);
+    return res.rows[0];
+  } catch (error) {
+    console.error("failing to save check-in:", error);
+    return null;
+  }
 }
 
-export function getCheckIns(): CheckInEntry[] {
+export async function getCheckIns(): Promise<CheckInEntry[]> {
+  const userId = sessionStorage.getItem("user_id");
+  if (!userId) return [];
+
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  } catch {
+    const res = await pool.query("SELECT * FROM check_ins WHERE user_id = $1 ORDER BY date DESC", [userId]);
+    return res.rows;
+  } catch (error) {
+    console.error("failing to fetch check-ins:", error);
     return [];
+  }
+}
+
+async function ensureUserExists(userId: string) {
+  try {
+    const res = await pool.query("SELECT id FROM users WHERE id = $1", [userId]);
+    if (res.rowCount === 0) {
+      await pool.query("INSERT INTO users (id) VALUES ($1)", [userId]);
+      console.log(`User ${userId} initialized in database.`);
+    }
+  } catch (error) {
+    console.error("failing to ensure user exists:", error);
   }
 }
 

@@ -339,8 +339,8 @@ const CravingCheck = () => {
   const [choice, setChoice] = useState("deciding");
   const [done, setDone] = useState(false);
 
-  const finishCheckIn = (overrideChoice?: string) => {
-    saveCheckIn({
+  const finishCheckIn = async (overrideChoice?: string) => {
+    await saveCheckIn({
       craving: path === "yes",
       intensity,
       trigger,
@@ -348,6 +348,7 @@ const CravingCheck = () => {
     });
     setDone(true);
   };
+
 
   const reset = () => {
     setStep(0);
