@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveCheckIn } from "@/lib/checkInStorage";
 import { ClockArrowUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 
 const BreathingCircle = () => (
   <div className="flex items-center justify-center my-8">
@@ -35,8 +37,8 @@ const StepButton = ({
     ? variant === "sage"
       ? "bg-accent-sage text-foreground"
       : variant === "amber"
-      ? "bg-accent-amber text-foreground"
-      : "bg-primary text-primary-foreground"
+        ? "bg-accent-amber text-foreground"
+        : "bg-primary text-primary-foreground"
     : "bg-card text-foreground border border-border";
 
   return (
@@ -56,6 +58,7 @@ const ActionButton = ({ label, onClick }: { label: string; onClick: () => void }
 );
 
 const Screen1 = ({ onNext }: StepProps) => {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleSelect = (val: string) => {
@@ -63,71 +66,84 @@ const Screen1 = ({ onNext }: StepProps) => {
     setTimeout(() => onNext(val), 400);
   };
 
+
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
       <p className="text-sm text-muted-foreground tracking-widest uppercase mb-2 animate-soft-fade">
-        Craving Check
+        {t('craving_check')}
       </p>
       <p className="text-xs text-muted-foreground mb-10 animate-soft-fade-delay">
-        Pause before you react.
+        {t('pause_before_react')}
       </p>
       <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-10 animate-soft-fade-delay leading-relaxed">
-        Are you craving a cigarette right now? 🔥
+        {t('are_you_craving')}
       </h1>
       <div className="w-full max-w-xs flex flex-col gap-4 animate-soft-fade-delay-2">
-        <StepButton label="Yes" selected={selected === "yes"} onClick={() => handleSelect("yes")} />
-        <StepButton label="No" selected={selected === "no"} onClick={() => handleSelect("no")} />
+        <StepButton label={t('yes')} selected={selected === "yes"} onClick={() => handleSelect("yes")} />
+        <StepButton label={t('no')} selected={selected === "no"} onClick={() => handleSelect("no")} />
+      </div>
+    </div>
+
+  );
+};
+
+const NoScreen1 = ({ onNext }: StepProps) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
+      <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-3 animate-soft-fade">
+        {t('no_strong_craving')}
+      </h1>
+      <p className="text-muted-foreground text-center mb-10 animate-soft-fade-delay">
+        {t('stability')}
+      </p>
+      <div className="w-full max-w-xs animate-soft-fade-delay-2">
+        <ActionButton label={t('finish')} onClick={() => onNext()} />
       </div>
     </div>
   );
 };
 
-const NoScreen1 = ({ onNext }: StepProps) => (
-  <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
-    <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-3 animate-soft-fade">
-      No strong craving right now.
-    </h1>
-    <p className="text-muted-foreground text-center mb-10 animate-soft-fade-delay">
-      That's stability.
-    </p>
-    <div className="w-full max-w-xs animate-soft-fade-delay-2">
-      <ActionButton label="Finish" onClick={() => onNext()} />
-    </div>
-  </div>
-);
 
-const NoFinal = ({ onDone }: { onDone: () => void }) => (
-  <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
-    <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-3 animate-soft-fade">
-      You're building quiet strength.
-    </h1>
-    <p className="text-muted-foreground text-center mb-10 animate-soft-fade-delay">
-      Stay steady — you're doing better than you think.
-    </p>
-    <div className="w-full max-w-xs animate-soft-fade-delay-2">
-      <ActionButton label="Done" onClick={onDone} />
+const NoFinal = ({ onDone }: { onDone: () => void }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
+      <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-3 animate-soft-fade">
+        {t('quiet_strength')}
+      </h1>
+      <p className="text-muted-foreground text-center mb-10 animate-soft-fade-delay">
+        {t('stay_steady')}
+      </p>
+      <div className="w-full max-w-xs animate-soft-fade-delay-2">
+        <ActionButton label={t('done')} onClick={onDone} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
 
 const IntensitySlider = ({ onNext }: StepProps) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState(5);
   const [touched, setTouched] = useState(false);
 
   const getLabel = (v: number) => {
-    if (v <= 3) return "Mild";
-    if (v <= 6) return "Moderate";
-    if (v <= 8) return "Strong";
-    return "Very strong";
+    if (v <= 3) return t('mild');
+    if (v <= 6) return t('moderate');
+    if (v <= 8) return t('strong');
+    return t('very_strong');
   };
+
 
   const fillPercent = ((value - 1) / 9) * 100;
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
       <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-12 animate-soft-fade">
-        How strong is the craving?
+        {t('how_strong')}
       </h1>
+
 
       <div className="w-full max-w-xs mb-6">
         <div className="relative">
@@ -165,24 +181,33 @@ const IntensitySlider = ({ onNext }: StepProps) => {
 
       {touched && (
         <div className="w-full max-w-xs animate-soft-fade">
-          <ActionButton label="Continue" onClick={() => onNext(String(value))} />
+          <ActionButton label={t('continue')} onClick={() => onNext(String(value))} />
         </div>
       )}
+
     </div>
   );
 };
 
 const TriggerScreen = ({ onNext }: StepProps) => {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string | null>(null);
   const [otherText, setOtherText] = useState("");
   const [showOther, setShowOther] = useState(false);
 
-  const triggers = ["Stress", "Boredom", "Habit", "Social situation", "After a meal"];
+  const triggers = [
+    { key: "Stress", label: t('stress') },
+    { key: "Boredom", label: t('boredom') },
+    { key: "Habit", label: t('habit') },
+    { key: "Social situation", label: t('social_situation') },
+    { key: "After a meal", label: t('after_meal') }
+  ];
+
 
   const handleSelect = (val: string) => {
     setSelected(val);
     setShowOther(false);
-    setTimeout(() => onNext(val), 400);
+    setTimeout(() => onNext(t(val.toLowerCase().replace(/ /g, '_'))), 400);
   };
 
   const handleOther = () => {
@@ -190,40 +215,43 @@ const TriggerScreen = ({ onNext }: StepProps) => {
     setShowOther(true);
   };
 
+
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
       <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-10 animate-soft-fade">
-        What triggered it?
+        {t('what_triggered')}
       </h1>
       <div className="w-full max-w-xs flex flex-col gap-3 animate-soft-fade-delay">
-        {triggers.map((t) => (
+        {triggers.map((t_obj) => (
           <StepButton
-            key={t}
-            label={t}
-            selected={selected === t}
-            onClick={() => handleSelect(t)}
+            key={t_obj.key}
+            label={t_obj.label}
+            selected={selected === t_obj.key}
+            onClick={() => handleSelect(t_obj.key)}
             variant="sage"
           />
         ))}
         <StepButton
-          label="Other"
+          label={t('other')}
           selected={selected === "Other"}
           onClick={handleOther}
           variant="sage"
         />
+
         {showOther && (
           <div className="flex flex-col gap-3 animate-soft-fade">
             <textarea
               className="w-full p-4 rounded-lg border border-border bg-card text-foreground font-body resize-none focus:outline-none focus:ring-2 focus:ring-accent-sage"
               rows={3}
-              placeholder="What's on your mind..."
+              placeholder={t('whats_on_mind')}
               value={otherText}
               onChange={(e) => setOtherText(e.target.value)}
               autoFocus
             />
             {otherText.trim() && (
-              <ActionButton label="Continue" onClick={() => onNext(otherText)} />
+              <ActionButton label={t('continue')} onClick={() => onNext(otherText)} />
             )}
+
           </div>
         )}
       </div>
@@ -231,22 +259,27 @@ const TriggerScreen = ({ onNext }: StepProps) => {
   );
 };
 
-const BreathingScreen = ({ onNext }: StepProps) => (
-  <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
-    <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-4 animate-soft-fade">
-      Take one slow breath.
-    </h1>
-    <BreathingCircle />
-    <p className="text-muted-foreground text-center mb-10 animate-soft-fade-delay">
-      You don't have to act immediately.
-    </p>
-    <div className="w-full max-w-xs animate-soft-fade-delay-2">
-      <ActionButton label="Continue" onClick={() => onNext()} />
+const BreathingScreen = ({ onNext }: StepProps) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
+      <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-4 animate-soft-fade">
+        {t('slow_breath')}
+      </h1>
+      <BreathingCircle />
+      <p className="text-muted-foreground text-center mb-10 animate-soft-fade-delay">
+        {t('no_act_immediately')}
+      </p>
+      <div className="w-full max-w-xs animate-soft-fade-delay-2">
+        <ActionButton label={t('continue')} onClick={() => onNext()} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
 
 const ChoiceScreen = ({ onNext }: StepProps) => {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleSelect = (val: string) => {
@@ -257,22 +290,24 @@ const ChoiceScreen = ({ onNext }: StepProps) => {
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-8 animate-slide-in">
       <h1 className="font-heading font-semibold text-2xl text-foreground text-center mb-10 animate-soft-fade">
-        What did you choose?
+        {t('what_choice')}
       </h1>
       <div className="w-full max-w-xs flex flex-col gap-4 animate-soft-fade-delay">
-        <StepButton label="Didn't act" selected={selected === "didnt"} onClick={() => handleSelect("didnt")} variant="amber" />
-        <StepButton label="Acted" selected={selected === "acted"} onClick={() => handleSelect("acted")} variant="amber" />
-        <StepButton label="Still deciding" selected={selected === "deciding"} onClick={() => handleSelect("deciding")} variant="amber" />
+        <StepButton label={t('didnt_act')} selected={selected === "didnt"} onClick={() => handleSelect("didnt")} variant="amber" />
+        <StepButton label={t('acted')} selected={selected === "acted"} onClick={() => handleSelect("acted")} variant="amber" />
+        <StepButton label={t('still_deciding')} selected={selected === "deciding"} onClick={() => handleSelect("deciding")} variant="amber" />
       </div>
     </div>
   );
 };
 
+
 const YesFinal = ({ choice, onDone }: { choice: string; onDone: () => void }) => {
+  const { t } = useTranslation();
   const messages: Record<string, { title: string; sub: string }> = {
-    didnt: { title: "You handled the urge.", sub: "That's real progress." },
-    acted: { title: "It's okay. You showed up.", sub: "Awareness is how change begins." },
-    deciding: { title: "You paused instead of reacting.", sub: "That pause is powerful." },
+    didnt: { title: t('handled_urge'), sub: t('real_progress') },
+    acted: { title: t('its_okay'), sub: t('awareness_begins') },
+    deciding: { title: t('paused_instead'), sub: t('pause_powerful') },
   };
 
   const msg = messages[choice] || messages.deciding;
@@ -286,14 +321,17 @@ const YesFinal = ({ choice, onDone }: { choice: string; onDone: () => void }) =>
         {msg.sub}
       </p>
       <div className="w-full max-w-xs animate-soft-fade-delay-2">
-        <ActionButton label="Finish Check-In" onClick={onDone} />
+        <ActionButton label={t('finish_checkin')} onClick={onDone} />
       </div>
     </div>
   );
 };
 
+
 const CravingCheck = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
   const [step, setStep] = useState(0);
   const [path, setPath] = useState<"yes" | "no" | null>(null);
   const [intensity, setIntensity] = useState<number | undefined>();
@@ -314,10 +352,11 @@ const CravingCheck = () => {
   if (done) {
     return (
       <div className="min-h-dvh bg-app-gradient flex flex-col items-center justify-center px-8 animate-soft-fade">
-        <p className="text-muted-foreground text-center">Check-in complete.</p>
+        <p className="text-muted-foreground text-center">{t('checkin_complete')}</p>
       </div>
     );
   }
+
 
   const handleStep1 = (val?: string) => {
     if (val === "yes") {
@@ -380,10 +419,11 @@ const CravingCheck = () => {
         <button
           onClick={() => navigate("/history")}
           className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-card border border-border active:scale-95 transition-transform z-10"
-          aria-label="View history"
+          aria-label={t('view_history')}
         >
           <ClockArrowUp className="w-5 h-5 text-muted-foreground" />
         </button>
+
       )}
       {renderStep()}
     </div>

@@ -9,12 +9,15 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+import LanguageSelector from "./components/LanguageSelector";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/smoke_craving_tracker">
+        <LanguageSelector />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/history" element={<History />} />
@@ -25,5 +28,6 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+
 
 export default App;
